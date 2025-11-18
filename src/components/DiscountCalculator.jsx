@@ -4,7 +4,7 @@ import { useDiscountCalculator } from '../hooks/useDiscountCalculator';
 import PriceDisplay from './PriceDisplay';
 
 /**
- * Main Discount Calculator component
+ * Main Discount Calculator component with USD/KHR support
  */
 const DiscountCalculator = () => {
   const {
@@ -20,6 +20,8 @@ const DiscountCalculator = () => {
     setTaxRate,
     includeTax,
     setIncludeTax,
+    currency,        // 👈 from updated hook
+    setCurrency,     // 👈 from updated hook
     result
   } = useDiscountCalculator();
 
@@ -46,6 +48,37 @@ const DiscountCalculator = () => {
             </h2>
 
             <div className="space-y-6">
+              {/* Currency Selector — NEW */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Currency
+                </label>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setCurrency('USD')}
+                    className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                      currency === 'USD'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    <DollarSign className="w-4 h-4 mr-1.5" />
+                    USD
+                  </button>
+                  <button
+                    onClick={() => setCurrency('KHR')}
+                    className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                      currency === 'KHR'
+                        ? 'bg-green-600 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    <span className="text-base mr-1">៛</span>
+                    KHR
+                  </button>
+                </div>
+              </div>
+
               {/* Original Price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -183,7 +216,13 @@ const DiscountCalculator = () => {
 
             {isValidInput && result ? (
               <div className="space-y-4">
-                <PriceDisplay result={result} includeTax={includeTax} taxRate={taxRate} />
+                {/* 👇 Pass currency to PriceDisplay */}
+                <PriceDisplay 
+                  result={result} 
+                  includeTax={includeTax} 
+                  taxRate={taxRate} 
+                  currency={currency} 
+                />
 
                 {/* Quick Actions */}
                 <div className="pt-4 border-t">

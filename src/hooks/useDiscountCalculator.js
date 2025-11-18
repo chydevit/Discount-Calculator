@@ -1,23 +1,25 @@
-import { useState, useEffect } from 'react';
-import { calculateDiscount } from '../utils/calculations';
+// hooks/useDiscountCalculator.js
+import { useState, useEffect } from "react";
+import { calculateDiscount } from "../utils/calculations";
 
 /**
- * Custom hook for discount calculator logic
+ * Custom hook for discount calculator logic with currency support
  * @returns {Object} Calculator state and setters
  */
 export const useDiscountCalculator = () => {
-  const [originalPrice, setOriginalPrice] = useState('100');
-  const [discountType, setDiscountType] = useState('percentage');
-  const [discountValue, setDiscountValue] = useState('20');
-  const [quantity, setQuantity] = useState('1');
-  const [taxRate, setTaxRate] = useState('8.5');
+  const [originalPrice, setOriginalPrice] = useState("100");
+  const [discountType, setDiscountType] = useState("percentage");
+  const [discountValue, setDiscountValue] = useState("20");
+  const [quantity, setQuantity] = useState("1");
+  const [taxRate, setTaxRate] = useState("8.5");
   const [includeTax, setIncludeTax] = useState(false);
+  const [currency, setCurrency] = useState("USD"); // 👈 NEW: currency state
   const [result, setResult] = useState(null);
 
   useEffect(() => {
     const price = parseFloat(originalPrice);
     const discount = parseFloat(discountValue);
-    const qty = parseInt(quantity);
+    const qty = parseInt(quantity, 10);
     const tax = parseFloat(taxRate);
 
     if (isNaN(price) || isNaN(discount) || isNaN(qty) || isNaN(tax)) {
@@ -35,7 +37,14 @@ export const useDiscountCalculator = () => {
     );
 
     setResult(calculationResult);
-  }, [originalPrice, discountType, discountValue, quantity, taxRate, includeTax]);
+  }, [
+    originalPrice,
+    discountType,
+    discountValue,
+    quantity,
+    taxRate,
+    includeTax,
+  ]);
 
   return {
     originalPrice,
@@ -50,6 +59,8 @@ export const useDiscountCalculator = () => {
     setTaxRate,
     includeTax,
     setIncludeTax,
-    result
+    currency, // 👈 exposed
+    setCurrency, // 👈 exposed
+    result,
   };
 };
